@@ -1,0 +1,1 @@
+{"name":"AGenNext Publish Worker","nodes":[{"name":"Webhook","type":"n8n-nodes-base.webhook","parameters":{"path":"agennext-publish"}},{"name":"Publish","type":"n8n-nodes-base.httpRequest","parameters":{"method":"POST","url":"http://api:8080/publish"}}],"connections":{}}
