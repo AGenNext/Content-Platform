@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agennext-content-dashboard
+spec:
+  replicas: {{ .Values.dashboard.replicas }}
+  selector:
+    matchLabels:
+      app: agennext-content-dashboard
+  template:
+    metadata:
+      labels:
+        app: agennext-content-dashboard
+    spec:
+      containers:
+        - name: dashboard
+          image: {{ .Values.image.dashboard }}
+          ports:
+            - containerPort: {{ .Values.dashboard.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agennext-content-dashboard
+spec:
+  selector:
+    app: agennext-content-dashboard
+  ports:
+    - port: {{ .Values.dashboard.port }}
+      targetPort: {{ .Values.dashboard.port }}

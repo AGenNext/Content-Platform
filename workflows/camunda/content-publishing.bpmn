@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_ContentPublishing" targetNamespace="https://agennext.com/content-platform">
+  <bpmn:process id="content_publishing" name="Content Publishing" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_Content" name="Content Received" />
+    <bpmn:serviceTask id="Task_Validate" name="Validate Content" />
+    <bpmn:serviceTask id="Task_AI" name="AI Enrichment" />
+    <bpmn:userTask id="Task_Approval" name="Editorial Approval" />
+    <bpmn:serviceTask id="Task_Publish" name="Publish Content" />
+    <bpmn:serviceTask id="Task_Verify" name="Verify Publication" />
+    <bpmn:endEvent id="EndEvent_Published" name="Published" />
+  </bpmn:process>
+</bpmn:definitions>

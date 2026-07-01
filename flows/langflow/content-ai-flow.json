@@ -1,0 +1,1 @@
+{"name":"content-ai-flow","version":"0.1.0-alpha","input":{"article_id":"string","title":"string","body":"string","brand":"AGenNext"},"nodes":["research","outline","writer","technical_review","seo","social","json_output"],"output":{"seo_title":"string","meta_description":"string","tags":["string"],"summary":"string","social":{"linkedin":"string","x":"string"}}}
