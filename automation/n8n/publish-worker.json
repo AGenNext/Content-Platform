@@ -1,1 +1,42 @@
-{"name":"AGenNext Publish Worker","nodes":[{"name":"Webhook","type":"n8n-nodes-base.webhook","parameters":{"path":"agennext-publish"}},{"name":"Publish","type":"n8n-nodes-base.httpRequest","parameters":{"method":"POST","url":"http://api:8080/publish"}}],"connections":{}}
+{
+  "name": "AGenNext Publish Worker",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "agennext-publish",
+        "httpMethod": "POST",
+        "responseMode": "lastNode"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8080/publish",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}"
+      },
+      "name": "Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Publish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
