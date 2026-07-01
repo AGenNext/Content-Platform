@@ -1,1 +1,35 @@
-{"name":"@agennext/content-connectors","version":"0.1.0-alpha","type":"module","scripts":{"build":"tsc -p tsconfig.json"},"devDependencies":{"typescript":"latest"},"dependencies":{}}
+{
+  "name": "@agennext/content-connectors",
+  "version": "0.1.0-alpha",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./wordpress": {
+      "types": "./dist/wordpress.d.ts",
+      "import": "./dist/wordpress.js"
+    },
+    "./rss": {
+      "types": "./dist/rss.d.ts",
+      "import": "./dist/rss.js"
+    },
+    "./github-pages": {
+      "types": "./dist/github-pages.d.ts",
+      "import": "./dist/github-pages.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  },
+  "dependencies": {}
+}

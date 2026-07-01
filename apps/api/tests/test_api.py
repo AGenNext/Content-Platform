@@ -24,6 +24,10 @@ def test_content_lifecycle_dry_run_publish():
 
     results = client.post("/publish", json={"article_id": article_id, "channels": ["rss"], "dry_run": True}).json()
     assert results["results"][0]["status"] == "dry_run"
+    assert results["article_status"] == "approved"
+
+    article = client.get(f"/articles/{article_id}").json()
+    assert article["status"] == "approved"
 
     metrics = client.get("/metrics")
     assert metrics.status_code == 200
