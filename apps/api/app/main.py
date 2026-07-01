@@ -108,14 +108,7 @@ def create_article(payload: ArticleCreate) -> dict[str, Any]:
     article_id = f"article_{uuid4().hex[:12]}"
     created = now()
     article = payload.model_dump()
-    article.update({
-        "id": article_id,
-        "slug": payload.slug or slugify(payload.title),
-        "status": ArticleStatus.draft,
-        "version": 1,
-        "created_at": created,
-        "updated_at": created,
-    })
+    article.update({"id": article_id, "slug": payload.slug or slugify(payload.title), "status": ArticleStatus.draft, "version": 1, "created_at": created, "updated_at": created})
     ARTICLES[article_id] = article
     snapshot(article)
     emit("content.created", article_id)
@@ -171,12 +164,7 @@ def validate_article(article_id: str) -> dict[str, Any]:
 @app.post("/ai/enhance")
 def enhance(payload: EnhanceRequest) -> dict[str, Any]:
     article = get_article(payload.article_id)
-    generated = {
-        "seo_title": article["title"][:60],
-        "meta_description": (article.get("excerpt") or article["body"][:150]).strip(),
-        "tags": sorted(set(article.get("tags", []) + ["AI", "Content Operations"])),
-        "summary": article["body"][:240],
-    }
+    generated = {"seo_title": article["title"][:60], "meta_description": (article.get("excerpt") or article["body"][:150]).strip(), "tags": sorted(set(article.get("tags", []) + ["AI", "Content Operations"])), "summary": article["body"][:240]}
     if payload.apply:
         article["tags"] = generated["tags"]
         article["status"] = ArticleStatus.ai_ready
@@ -230,24 +218,19 @@ def publish(payload: PublishRequest) -> dict[str, Any]:
     if article["status"] not in [ArticleStatus.approved, ArticleStatus.published]:
         raise HTTPException(status_code=409, detail="article must be approved before publishing")
     results = []
-    article["status"] = ArticleStatus.publishing
+    original_status = article["status"]
+    if not payload.dry_run:
+        article["status"] = ArticleStatus.publishing
     emit("publication.started", payload.article_id, {"channels": payload.channels, "dry_run": payload.dry_run})
     for channel in payload.channels:
         publication_id = f"publication_{uuid4().hex[:12]}"
-        result = {
-            "id": publication_id,
-            "article_id": payload.article_id,
-            "channel": channel,
-            "status": "dry_run" if payload.dry_run else "published",
-            "url": f"https://example.com/{channel}/{article['slug']}",
-            "created_at": now(),
-        }
+        result = {"id": publication_id, "article_id": payload.article_id, "channel": channel, "status": "dry_run" if payload.dry_run else "published", "url": f"https://example.com/{channel}/{article['slug']}", "created_at": now()}
         PUBLICATIONS[publication_id] = result
         results.append(result)
-    article["status"] = ArticleStatus.published
+    article["status"] = original_status if payload.dry_run else ArticleStatus.published
     article["updated_at"] = now()
-    emit("publication.completed", payload.article_id, {"results": results})
-    return {"article_id": payload.article_id, "results": results}
+    emit("publication.completed", payload.article_id, {"results": results, "dry_run": payload.dry_run})
+    return {"article_id": payload.article_id, "results": results, "dry_run": payload.dry_run, "article_status": article["status"]}
 
 
 @app.get("/publications")
@@ -267,8 +250,4 @@ def events(subject_id: str | None = None) -> list[dict[str, Any]]:
 
 @app.get("/connectors/health")
 def connector_health() -> dict[str, Any]:
-    return {
-        "wordpress": {"status": "configured_required_for_live_publish"},
-        "rss": {"status": "ready"},
-        "github_pages": {"status": "configured_required_for_live_publish"},
-    }
+    return {"wordpress": {"status": "configured_required_for_live_publish"}, "rss": {"status": "ready"}, "github_pages": {"status": "configured_required_for_live_publish"}}
