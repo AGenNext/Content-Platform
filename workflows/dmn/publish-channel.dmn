@@ -1,0 +1,9 @@
+# Publish Channel DMN Seed
+
+| content_type | default_channel |
+|---|---|
+| blog | wordpress |
+| docs | github_pages |
+| newsletter | substack |
+| social | linkedin |
+| feed | rss |
